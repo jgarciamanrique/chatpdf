@@ -1,0 +1,12 @@
+# Opcional: en Render → New → Blueprint y conecta este repo.
+services:
+  - type: web
+    name: chatpdf
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

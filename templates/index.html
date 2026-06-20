@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatPDF - Conversa con tu PDF</title>
+    <link rel="stylesheet" href="/static/style.css?v=7" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark"></div>
+          <div>
+            <h1>ChatPDF</h1>
+            <p>PDF a la izquierda · Chat a la derecha</p>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <input id="pdfFile" type="file" accept="application/pdf" class="file-input" />
+          <button id="btnUpload" class="btn primary" type="button">Subir PDF</button>
+          <span id="uploadStatus" class="status" aria-live="polite"></span>
+        </div>
+      </header>
+
+      <div class="split-shell">
+        <main class="split-layout">
+          <section class="panel panel-pdf">
+            <div class="panel-header">
+              <h2>Documento</h2>
+              <span id="pdfFilename" class="filename">Ningún PDF cargado</span>
+            </div>
+
+            <div id="pdfPlaceholder" class="pdf-placeholder">
+              <p>Sube un PDF para verlo aquí</p>
+              <p class="muted">Máximo 50 MB · hasta 500 páginas</p>
+            </div>
+
+            <iframe
+              id="pdfViewer"
+              class="pdf-viewer hidden"
+              title="Visor de PDF"
+            ></iframe>
+          </section>
+
+          <section class="panel panel-chat">
+            <div class="chat-header">
+              <div class="chat-title">
+                <h2>Chat</h2>
+                <div id="chatHint" class="hint">Sube un PDF para habilitar la conversación.</div>
+              </div>
+              <div class="chat-controls">
+                <button id="btnNewChat" class="btn ghost" type="button">Limpiar chat</button>
+              </div>
+            </div>
+
+            <div id="messages" class="messages" aria-live="polite"></div>
+
+            <div id="typing" class="typing" style="display:none;">
+              <span></span><span></span><span></span>
+            </div>
+
+            <div id="imagePreview" class="image-preview hidden">
+              <img id="imagePreviewImg" alt="Vista previa" />
+              <button id="btnRemoveImage" class="btn ghost btn-small" type="button">Quitar imagen</button>
+            </div>
+
+            <div class="composer-wrap">
+              <div class="composer-box">
+                <div class="composer-input-wrap">
+                  <textarea
+                    id="questionInput"
+                    class="composer-input"
+                    rows="2"
+                    placeholder="Pregunta lo que quieras..."
+                  ></textarea>
+
+                  <button id="btnSend" class="btn primary composer-send" type="button" aria-label="Enviar consulta">
+                    Enviar
+                  </button>
+                </div>
+
+                <div class="composer-bar">
+                  <span class="composer-star" aria-hidden="true">✦</span>
+
+                  <select id="modelSelect" class="composer-model" aria-label="Modelo de IA">
+                    <option value="gemini" selected>Gemini 2.0 Flash</option>
+                    <option value="grok">Grok · Llama 3.3 70B</option>
+                  </select>
+
+                  <span class="composer-divider" aria-hidden="true"></span>
+
+                  <button id="btnAttachImage" class="composer-icon" type="button" title="Adjuntar imagen">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <path d="M21 15l-5-5L5 21" />
+                    </svg>
+                  </button>
+
+                  <button id="btnMic" class="composer-icon" type="button" title="Consulta por voz">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                      <line x1="12" y1="19" x2="12" y2="23" />
+                      <line x1="8" y1="23" x2="16" y2="23" />
+                    </svg>
+                  </button>
+
+                  <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
+                </div>
+              </div>
+            </div>
+
+            <div id="chatError" class="error" role="alert"></div>
+          </section>
+        </main>
+
+        <div
+          id="splitResizer"
+          class="split-resizer"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Redimensionar paneles"
+          tabindex="0"
+          title="Arrastra para ajustar el tamaño"
+        >
+          <div class="split-resizer-grip" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M8 12H4" />
+              <path d="M20 12h-4" />
+              <path d="M12 8V4" />
+              <path d="M12 20v-4" />
+              <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__APP__ = {
+        chatEndpoint: "/chat",
+        uploadEndpoint: "/upload",
+      };
+    </script>
+    <script src="/static/app.js?v=9"></script>
+  </body>
+</html>

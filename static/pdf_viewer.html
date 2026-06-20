@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visor PDF</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #1a1a2e;
+        color: #374151;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+
+      #shell {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      #outer {
+        height: 100%;
+        overflow: auto;
+        padding: 12px 12px 72px;
+      }
+
+      #status {
+        text-align: center;
+        padding: 24px;
+        color: #9ca3af;
+        font-size: 13px;
+      }
+
+      #pages {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+      }
+
+      .page-slot {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        background: #fff;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        border-radius: 4px;
+        overflow: visible;
+        min-height: 120px;
+      }
+
+      .page-slot canvas {
+        display: block;
+      }
+
+      .page-slot.rendering {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        font-size: 12px;
+        background: #f3f4f6;
+      }
+
+      .pdf-toolbar {
+        position: absolute;
+        left: 50%;
+        bottom: 14px;
+        transform: translateX(-50%);
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        box-shadow: 0 6px 28px rgba(0, 0, 0, 0.22);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+
+      .pdf-toolbar.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .pdf-toolbar button {
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: #4b5563;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
+
+      .pdf-toolbar button:hover {
+        background: rgba(0, 0, 0, 0.06);
+        color: #111827;
+      }
+
+      .pdf-toolbar .page-controls {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: 4px;
+        padding-left: 8px;
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .pdf-toolbar input {
+        width: 42px;
+        height: 28px;
+        border: none;
+        border-radius: 6px;
+        background: #fff;
+        color: #111827;
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        outline: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      }
+
+      .pdf-toolbar input::-webkit-outer-spin-button,
+      .pdf-toolbar input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .pdf-toolbar .page-total {
+        font-size: 13px;
+        color: #6b7280;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="shell">
+      <div id="outer">
+        <div id="status">Cargando PDF...</div>
+        <div id="pages"></div>
+      </div>
+
+      <div id="pdfToolbar" class="pdf-toolbar" aria-label="Controles del PDF">
+        <button id="btnZoomOut" type="button" title="Alejar" aria-label="Alejar">−</button>
+        <button id="btnFit" type="button" title="Restablecer zoom original" aria-label="Restablecer zoom original">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M8 3H3v5" />
+            <path d="M16 21h5v-5" />
+            <path d="M3 3l7 7" />
+            <path d="M21 21l-7-7" />
+          </svg>
+        </button>
+        <button id="btnZoomIn" type="button" title="Acercar" aria-label="Acercar">+</button>
+        <div class="page-controls">
+          <input id="pageInput" type="number" min="1" value="1" aria-label="Página actual" />
+          <span id="pageTotal" class="page-total">de 0</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="/static/pdf_viewer.js?v=5"></script>
+  </body>
+</html>
