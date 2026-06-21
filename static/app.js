@@ -2,6 +2,23 @@ function el(id) {
   return document.getElementById(id);
 }
 
+async function readJsonResponse(res) {
+  const text = await res.text();
+  if (!text.trim()) {
+    if (res.status === 502 || res.status === 503 || res.status === 504) {
+      throw new Error(
+        "El servidor no respondió a tiempo. En Render Free puede tardar ~1 min en despertar; espera y reintenta."
+      );
+    }
+    throw new Error(`Respuesta vacía del servidor (HTTP ${res.status}).`);
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error("Respuesta inválida del servidor. Recarga la página e inténtalo de nuevo.");
+  }
+}
+
 const MODEL_TAG_REGEX = /\[model:(\w+)\]/gi;
 
 const state = {
@@ -327,7 +344,7 @@ async function uploadPDF() {
       body: formData,
     });
 
-    const data = await res.json();
+    const data = await readJsonResponse(res);
     if (!res.ok) throw new Error(data.detail || "Error al subir PDF.");
 
     state.collectionId = data.collection_id;
@@ -399,7 +416,7 @@ async function ask(rawQuestion) {
       body: formData,
     });
 
-    const data = await res.json();
+    const data = await readJsonResponse(res);
     if (!res.ok) throw new Error(data.detail || "Error al consultar.");
 
     appendMessage({
