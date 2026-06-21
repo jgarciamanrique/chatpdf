@@ -4,12 +4,9 @@ WORKDIR /app
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    HF_HOME=/app/.cache/huggingface \
-    TRANSFORMERS_CACHE=/app/.cache/huggingface \
-    SENTENCE_TRANSFORMERS_HOME=/app/.cache/sentence-transformers
+    FASTEMBED_CACHE_PATH=/app/.cache/fastembed
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
